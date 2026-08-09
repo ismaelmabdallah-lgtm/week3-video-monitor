@@ -1,0 +1,25 @@
+# Virtual Environment
+venv/
+.venv/
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Generated output
+output_videos/
+logs/
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+
+.env
+venv/
+output_videos/*
+logs/*
