@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS detections (
     id INT AUTO_INCREMENT PRIMARY KEY,
     frame_number INT NOT NULL,
     timestamp DATETIME NOT NULL,
+    video_name VARCHAR(255) NOT NULL,
     object_id INT NOT NULL,
     class_name VARCHAR(50) NOT NULL,
     confidence FLOAT NOT NULL,
@@ -14,5 +15,8 @@ CREATE TABLE IF NOT EXISTS detections (
     y2 FLOAT NOT NULL,
     speed FLOAT DEFAULT 0.0,
     is_anomaly BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_video_name (video_name),
+    INDEX idx_object_id (object_id),
+    INDEX idx_is_anomaly (is_anomaly)
 );
