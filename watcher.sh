@@ -1,4 +1,6 @@
+cat << 'EOF' > watcher.sh
 #!/bin/bash
+set -u
 
 # Define absolute directory paths
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -9,7 +11,7 @@ PROCESSED_LIST="$LOG_DIR/processed_files.txt"
 VENV_PYTHON="$PROJECT_DIR/venv/bin/python"
 
 # Ensure required directories and files exist
-mkdir -p "$OUTPUT_DIR" "$LOG_DIR"
+mkdir -p "$OUTPUT_DIR" "$LOG_DIR" "$INPUT_DIR"
 touch "$PROCESSED_LIST"
 
 for video_file in "$INPUT_DIR"/*.mp4; do
@@ -28,13 +30,12 @@ for video_file in "$INPUT_DIR"/*.mp4; do
     output_file="$OUTPUT_DIR/processed_$filename"
 
     # Execute monitor.py via venv python
-    "$VENV_PYTHON" "$PROJECT_DIR/monitor.py" --input "$video_file" --output "$output_file" --threshold 0.35
-
-    # Log completion status
-    if [ $? -eq 0 ]; then
+    if "$VENV_PYTHON" "$PROJECT_DIR/monitor.py" --input "$video_file" --output "$output_file" --threshold 0.35; then
         echo "$filename" >> "$PROCESSED_LIST"
         echo "✅ [Watcher] Successfully processed and recorded: $filename"
     else
-        echo "❌ [Watcher] Failed to process video: $filename"
+        echo "❌ [Watcher] Failed to process video: $filename (Exit code non-zero)" >&2
     fi
 done
+EOF
+chmod +x watcher.sh

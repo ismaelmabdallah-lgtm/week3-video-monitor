@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [videos, setVideos] = useState<VideoSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const API_BASE = "http://localhost:8000/api";
 
@@ -44,17 +45,19 @@ export default function Dashboard() {
         fetch(`${API_BASE}/videos`),
       ]);
 
-      if (resStatus.ok) setStatus(await resStatus.json());
-      if (resAnomalies.ok) {
-        const data = await resAnomalies.json();
-        setAnomalies(data.anomalies);
+      if (!resStatus.ok || !resAnomalies.ok || !resVideos.ok) {
+        throw new Error("One or more API endpoints returned non-200 status.");
       }
-      if (resVideos.ok) {
-        const data = await resVideos.json();
-        setVideos(data.videos);
-      }
-    } catch (err) {
-      console.error("Error fetching Dashboard data:", err);
+
+      setStatus(await resStatus.json());
+      const anomData = await resAnomalies.json();
+      setAnomalies(anomData.anomalies);
+      const vidData = await resVideos.json();
+      setVideos(vidData.videos);
+      setError(null); // Clear error on success
+    } catch (err: any) {
+      console.error("Dashboard connection error:", err);
+      setError("⚠️ Cannot connect to FastAPI Backend (http://localhost:8000). Please make sure the API server is running.");
     } finally {
       setLoading(false);
     }
@@ -62,9 +65,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000); // Auto refresh every 5 seconds
+    const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -89,6 +90,13 @@ export default function Dashboard() {
           </button>
         </div>
       </header>
+
+      {/* Visible Error Banner */}
+      {error && (
+        <div className="mb-6 bg-rose-500/20 border border-rose-500/50 text-rose-300 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
+          <span>{error}</span>
+        </div>
+      )}
 
       {loading && !status ? (
         <div className="text-center py-20 text-slate-400">Loading Dashboard Data...</div>
