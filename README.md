@@ -826,10 +826,11 @@ The tracker is initialized through Ultralytics using:
 
 ```python
 model.track(
-    frame,
+    source=frame,
     persist=True,
-    conf=args.threshold,
     tracker="bytetrack.yaml",
+    device="cpu",
+    conf=args.threshold,
     verbose=False
 )
 ```
