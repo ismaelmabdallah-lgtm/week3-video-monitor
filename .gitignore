@@ -1,25 +1,19 @@
-# Virtual Environment
-venv/
-.venv/
-
-# Environment variables
+# Environment & Security
 .env
+*.env
 
-# Python
+# Python Virtual Environments & Cache
+venv/
 __pycache__/
-*.py[cod]
+*.pyc
 
-# Generated output
+# Heavy ML Models & Data directories
+yolov8n.pt
+input_videos/
 output_videos/
-logs/
+logs/*.log
 
-# IDE
-.vscode/
-
-# OS
-.DS_Store
-
-.env
-venv/
-output_videos/*
-logs/*
+# Node.js / Next.js Build Output
+status_ui/node_modules/
+status_ui/.next/
+status_ui/out/

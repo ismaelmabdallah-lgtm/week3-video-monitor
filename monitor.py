@@ -35,7 +35,7 @@ load_dotenv(BASE_DIR / ".env")
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'localhost'),
     'user': os.getenv('DB_USER', 'monitor_user'),
-    'password': os.getenv('DB_PASSWORD', 'root1234'),
+    'password': os.getenv('DB_PASSWORD'),
     'database': os.getenv('DB_NAME', 'ppe_monitoring_db')
 }
 
